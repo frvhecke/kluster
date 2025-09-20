@@ -41,6 +41,12 @@ o9br7xamt36cphvd5tsz5hyi1 *   kluster-01       Ready     Active         Leader  
 j0o5wnjq3z337r5f4a3d1dnp6     kluster-02       Ready     Active         Reachable        28.1.1+1
 ```
 
+In my case, the ingress routing mesh of Docker Swarm was not working for an inexplicable reason. After a lot of googling, running the below on all nodes fixed the issue. (enp0s31f6 is the network interface on my machine)
+
+```
+sudo ethtool -K enp0s31f6 tx-checksum-ip-generic off
+```
+
 ### Keepalived
 
 While we now have a swarm that is capable to keep our workloads running in case of node failure, on a network level we would still be tying everything to IPs of individual nodes. So to create real high-availability, we also need to create a virtual IP that binds our 3 master nodes and makes sure traffic is rerouted in case of a node failure. While you could solve this with an external load balancer, we are keeping things a bit simpler in our homelab and will use keepalived to bind our nodes to a virtual IP.
